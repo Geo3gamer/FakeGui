@@ -3,8 +3,6 @@ FakeGui
 Tool for creating custom GUIs using packets.
 
 Maven:
-maven
-
 ```xml
 <repository>
     <id>jitpack.io</id>
