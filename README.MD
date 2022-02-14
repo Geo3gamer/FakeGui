@@ -56,9 +56,9 @@ public class CustomMenu extends Menu {
 
 ```java
     @EventHandler
-public void onJoin(PlayerJoinEvent event){
-        Player player=event.getPlayer();
-        Menu menu=new CustomMenu(player);
+    public void onJoin(PlayerJoinEvent event){
+        Player player = event.getPlayer();
+        Menu menu = new CustomMenu(player);
         menu.open();
-        }
+    }
 ```
