@@ -2,7 +2,24 @@ FakeGui
 =======
 Tool for creating custom GUIs using packets.
 
+Maven:
+maven
+
+```xml
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
+
+<dependency>
+    <groupId>com.github.Geo3gamer</groupId>
+    <artifactId>FakeGui</artifactId>
+    <version>b1.7.3-SNAPSHOT</version>
+</dependency>
+```
+
 Example usage:
+
 ```java
 package ru.sliva.fakegui;
 
@@ -26,7 +43,7 @@ public class CustomMenu extends Menu {
         Player player = event.getPlayer();
         int slot = event.getSlot();
         ClickType clickType = event.getClickType();
-        if(slot == 0 && clickType == ClickType.LEFT) {
+        if (slot == 0 && clickType == ClickType.LEFT) {
             player.sendMessage("It works");
         }
     }
@@ -38,11 +55,12 @@ public class CustomMenu extends Menu {
     }
 }
 ```
+
 ```java
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        Menu menu = new CustomMenu(player);
+public void onJoin(PlayerJoinEvent event){
+        Player player=event.getPlayer();
+        Menu menu=new CustomMenu(player);
         menu.open();
-    }
+        }
 ```
