@@ -33,7 +33,7 @@ public enum InventoryType {
     }
 
     public static InventoryType getInventoryType(int windowType, int slots) {
-        return Arrays.stream(values()).filter(inventoryType -> inventoryType.getContainerType().getIndex() == windowType && inventoryType.getSlots() == slots).findFirst().orElse(CHEST);
+        return Arrays.stream(values()).filter(inventoryType -> inventoryType.getContainerType().getIndex() == windowType && inventoryType.getSlots() == slots).findFirst().orElse(GENERIC_9x1);
     }
 
     public enum ContainerType {
