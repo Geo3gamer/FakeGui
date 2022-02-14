@@ -1,44 +1,36 @@
 package ru.sliva.fakegui.menu;
 
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ru.sliva.fakegui.event.ClickEvent;
 import ru.sliva.fakegui.wrapper.InventoryType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public abstract class Menu {
 
     private final InventoryType type;
-    private final Component title;
+    private final String title;
     private final ItemStack[] items;
     private int windowID;
-    private final UUID playerID;
+    private final Player player;
 
     private static final Random random = new Random();
 
-    public Menu(@NotNull InventoryType type, @NotNull Component title, @NotNull UUID playerID) {
+    public Menu(@NotNull InventoryType type, @NotNull String title, @NotNull Player player) {
         this.type = type;
         this.title = title;
         this.items = new ItemStack[getSize()];
-        this.playerID = playerID;
-    }
-
-    public Menu(@NotNull InventoryType type, @NotNull Component title, @NotNull OfflinePlayer player) {
-        this(type, title, player.getUniqueId());
-    }
-
-    public UUID getPlayerID() {
-        return playerID;
+        this.player = player;
     }
 
     public Player getPlayer() {
-        return Bukkit.getPlayer(playerID);
+        return player;
     }
 
     public final InventoryType getType() {
@@ -68,18 +60,14 @@ public abstract class Menu {
     }
 
     public ItemStack getItem(int slot) {
-        ItemStack item = items[slot];
-        if (item == null) {
-            item = new ItemStack(Material.AIR);
-        }
-        return item;
+        return items[slot];
     }
 
     public void clear() {
         Arrays.fill(items, null);
     }
 
-    public final Component getTitle() {
+    public final String getTitle() {
         return title;
     }
 
@@ -89,11 +77,11 @@ public abstract class Menu {
 
     public final void open() {
         windowID = random.nextInt(26) + 101;
-        MenuManager.getInstance().openMenu(getPlayer(), this);
+        MenuManager.getInstance().openMenu(player, this);
     }
 
     public final void close() {
-        MenuManager.getInstance().closeMenu(getPlayer(), this);
+        MenuManager.getInstance().closeMenu(player, this);
     }
 
     public abstract void onClick(@NotNull ClickEvent event);
