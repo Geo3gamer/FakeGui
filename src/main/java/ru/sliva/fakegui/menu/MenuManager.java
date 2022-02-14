@@ -10,11 +10,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import ru.sliva.fakegui.CustomMenu;
 import ru.sliva.fakegui.Main;
 import ru.sliva.fakegui.event.ClickEvent;
 import ru.sliva.fakegui.wrapper.ClickType;
@@ -41,13 +39,6 @@ public final class MenuManager extends PacketAdapter implements Listener, Runnab
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        Menu menu = new CustomMenu(player);
-        menu.open();
-    }
-
-    @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         Menu menu = getMenuByPlayer(player);
@@ -59,12 +50,11 @@ public final class MenuManager extends PacketAdapter implements Listener, Runnab
         PacketContainer packet = event.getPacket();
         Player player = event.getPlayer();
         if(event.getPacketType() == PacketType.Play.Client.WINDOW_CLICK) {
-            int windowID = packet.getIntegers().read(0);
             int slot = packet.getIntegers().read(2);
             int button = packet.getIntegers().read(3);
             ClickType.Mode mode = packet.getEnumModifier(ClickType.Mode.class, 4).read(0);
             ItemStack clicked = packet.getItemModifier().read(0);
-            Menu menu = getMenuByWindow(windowID);
+            Menu menu = getMenuByPlayer(player);
             if(menu != null) {
                 event.setReadOnly(false);
                 event.setCancelled(true);
@@ -80,8 +70,7 @@ public final class MenuManager extends PacketAdapter implements Listener, Runnab
                 }
             }
         } else if(event.getPacketType() == PacketType.Play.Client.CLOSE_WINDOW) {
-            int windowID = packet.getIntegers().read(0);
-            Menu menu = getMenuByWindow(windowID);
+            Menu menu = getMenuByPlayer(player);
             if(menu != null) {
                 menu.onClose();
                 untrackMenu(menu);
@@ -90,12 +79,8 @@ public final class MenuManager extends PacketAdapter implements Listener, Runnab
         }
     }
 
-    private Menu getMenuByWindow(int windowID) {
-        return menus.stream().filter(menu -> menu.getWindowID() == windowID).findFirst().orElse(null);
-    }
-
     private Menu getMenuByPlayer(@NotNull Player player) {
-        return menus.stream().filter(menu -> menu.getPlayer().equals(player)).findFirst().orElse(null);
+        return menus.stream().filter(menu -> menu.getPlayerID().equals(player.getUniqueId())).findFirst().orElse(null);
     }
 
     public void openMenu(@NotNull Player player, @NotNull Menu menu) {

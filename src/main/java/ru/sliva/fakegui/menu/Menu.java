@@ -1,7 +1,9 @@
 package ru.sliva.fakegui.menu;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -16,19 +18,27 @@ public abstract class Menu {
     private final Component title;
     private final ItemStack[] items;
     private int windowID;
-    private final Player player;
+    private final UUID playerID;
 
     private static final Random random = new Random();
 
-    public Menu(@NotNull InventoryType type, @NotNull Component title, @NotNull Player player) {
+    public Menu(@NotNull InventoryType type, @NotNull Component title, @NotNull UUID playerID) {
         this.type = type;
         this.title = title;
         this.items = new ItemStack[getSize()];
-        this.player = player;
+        this.playerID = playerID;
+    }
+
+    public Menu(@NotNull InventoryType type, @NotNull Component title, @NotNull OfflinePlayer player) {
+        this(type, title, player.getUniqueId());
+    }
+
+    public UUID getPlayerID() {
+        return playerID;
     }
 
     public Player getPlayer() {
-        return player;
+        return Bukkit.getPlayer(playerID);
     }
 
     public final InventoryType getType() {
@@ -79,11 +89,11 @@ public abstract class Menu {
 
     public final void open() {
         windowID = random.nextInt(26) + 101;
-        MenuManager.getInstance().openMenu(player, this);
+        MenuManager.getInstance().openMenu(getPlayer(), this);
     }
 
     public final void close() {
-        MenuManager.getInstance().closeMenu(player, this);
+        MenuManager.getInstance().closeMenu(getPlayer(), this);
     }
 
     public abstract void onClick(@NotNull ClickEvent event);
