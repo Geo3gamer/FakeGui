@@ -76,30 +76,63 @@ public final class MenuManager implements Listener, Runnable {
         }
     }
 
+    /**
+     * Find the menu that has the same player as the given player
+     *
+     * @param player The player who is opening the menu.
+     * @return The first menu that has the player's unique id.
+     */
     private Menu getMenuByPlayer(@NotNull Player player) {
         return menus.stream().filter(menu -> menu.getPlayer().getUniqueId().equals(player.getUniqueId())).findFirst().orElse(null);
     }
 
+    /**
+     * Opens menus for a player
+     *
+     * @param player The player who opened the menu.
+     * @param menu The Menu that is being opened.
+     */
     public void openMenu(@NotNull Player player, @NotNull Menu menu) {
         sendWindowOpen(player, menu.getWindowID(), menu.getType().getContainerType().getIndex(), menu.getTitle(), menu.getType().getSlots());
         trackMenu(menu);
     }
 
+    /**
+     * Closes menus for a player
+     *
+     * @param player The player who is closing the menu.
+     * @param menu The Menu that is being closed.
+     */
     public void closeMenu(@NotNull Player player, @NotNull Menu menu) {
         sendCloseWindow(player, menu.getWindowID());
         untrackMenu(menu);
     }
 
+    /**
+     * Add the menu to the list of tracked menus
+     *
+     * @param menu The menu that you want to track.
+     */
     private void trackMenu(@NotNull Menu menu) {
         if(!menus.contains(menu)) {
             menus.add(menu);
         }
     }
 
+    /**
+     * Remove the menu from the list of tracked menus
+     *
+     * @param menu The menu that you want to remove.
+     */
     private void untrackMenu(@NotNull Menu menu) {
         menus.remove(menu);
     }
 
+    /**
+     * It schedules a task to update the player's inventory
+     *
+     * @param player The player whose inventory is being updated.
+     */
     private void updateInventory(@NotNull Player player) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, player::updateInventory);
     }
@@ -113,36 +146,84 @@ public final class MenuManager implements Listener, Runnable {
         }
     }
 
+    /**
+     * It takes a player, a window ID, a slot number, and an item, and sends a packet to the player
+     *
+     * @param player The player that the packet is being sent to.
+     * @param windowID The window ID.
+     * @param slot The slot number to set.
+     * @param item The itemstack to set in the slot.
+     */
     private void sendSetSlot(@NotNull Player player, int windowID, int slot, ItemStack item) {
         net.minecraft.server.ItemStack slotData = asNMSCopy(item);
         Packet103SetSlot packet = new Packet103SetSlot(windowID, slot, slotData);
         sendPacket(player, packet);
     }
 
+    /**
+     * Send a close window packet to the player
+     *
+     * @param player The player that the packet is being sent to.
+     * @param windowID The ID of the window to close.
+     */
     private void sendCloseWindow(@NotNull Player player, int windowID) {
         Packet101CloseWindow packet = new Packet101CloseWindow(windowID);
         sendPacket(player, packet);
     }
 
+    /**
+     * Sends the window open packet to a player
+     *
+     * @param player The player that the window is being opened for.
+     * @param windowID The ID of the window to open.
+     * @param inventoryType The window inventory type
+     * @param title The title of the window.
+     * @param slots The number of slots in the window.
+     */
     private void sendWindowOpen(@NotNull Player player, int windowID, int inventoryType, String title, int slots) {
         Packet100OpenWindow packet = new Packet100OpenWindow(windowID, inventoryType, title, slots);
         sendPacket(player, packet);
     }
 
+    /**
+     * It takes a list of items and sends them as a packet to the player
+     *
+     * @param player The player to send the packet to.
+     * @param windowID The ID of the window to send the items to.
+     * @param items The items to send to the player.
+     */
     private void sendWindowItems(@NotNull Player player, int windowID, List<ItemStack> items) {
         List<net.minecraft.server.ItemStack> slotData = asNMSCopy(items);
         Packet104WindowItems packet = new Packet104WindowItems(windowID, slotData);
         sendPacket(player, packet);
     }
 
+    /**
+     * It sends the packet to the player
+     *
+     * @param player The player to send the packet to.
+     * @param packet The packet to send.
+     */
     private void sendPacket(@NotNull Player player, @NotNull Packet packet) {
         ((CraftPlayer) player).getHandle().netServerHandler.sendPacket(packet);
     }
 
+    /**
+     * Convert a bukkit itemstack to a net.minecraft.server itemstack
+     *
+     * @param itemStack The ItemStack to convert.
+     * @return The ItemStack object.
+     */
     private net.minecraft.server.ItemStack asNMSCopy(ItemStack itemStack) {
         return itemStack == null ? null : new net.minecraft.server.ItemStack(itemStack.getTypeId(), itemStack.getAmount(), itemStack.getDurability());
     }
 
+    /**
+     * It takes a list of ItemStacks and returns a list of NMS ItemStacks
+     *
+     * @param items The list of items to convert.
+     * @return A list of ItemStacks.
+     */
     private @NotNull List<net.minecraft.server.ItemStack> asNMSCopy(@NotNull List<ItemStack> items) {
         List<net.minecraft.server.ItemStack> list = new ArrayList<>();
         for(ItemStack item : items) {
