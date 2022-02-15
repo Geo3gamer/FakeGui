@@ -19,18 +19,38 @@ public final class ClickEvent {
         this.clickedItem = clickedItem;
     }
 
+    /**
+     * Returns the player
+     *
+     * @return The player.
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Returns the slot
+     *
+     * @return The slot.
+     */
     public int getSlot() {
         return slot;
     }
 
+    /**
+     * Returns the type of click that was performed
+     *
+     * @return The type of click.
+     */
     public ClickType getClickType() {
         return type;
     }
 
+    /**
+     * Get the item that was clicked on.
+     *
+     * @return The item that was clicked.
+     */
     public ItemStack getClickedItem() {
         return clickedItem;
     }

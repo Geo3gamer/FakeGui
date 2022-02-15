@@ -18,14 +18,31 @@ public enum ClickType {
         this.isShift = isShift;
     }
 
+    /**
+     * Returns 1 if the right mouse button was clicked, 0 if the left mouse button was clicked.
+     *
+     * @return The number
+     */
     public int getRightClick() {
         return rightClick;
     }
 
+    /**
+     * Returns true if the shift key is pressed
+     *
+     * @return A boolean value.
+     */
     public boolean isShift() {
         return isShift;
     }
 
+    /**
+     * Given a right click and shift status, return the corresponding click type
+     *
+     * @param rightClick 1 if the right mouse button was clicked, 0 if the left mouse button was clicked.
+     * @param isShift true if the shift key is pressed, false otherwise
+     * @return The first click type that matches the right click and shift parameters.
+     */
     public static ClickType getClickType(int rightClick, boolean isShift) {
         return Arrays.stream(values()).filter(clickType -> clickType.getRightClick() == rightClick && clickType.isShift() == isShift).findFirst().orElse(ClickType.LEFT);
     }

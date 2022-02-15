@@ -24,14 +24,31 @@ public enum InventoryType {
         this.slots = slots;
     }
 
+    /**
+     * Returns the type of container that this is
+     *
+     * @return The type of the container.
+     */
     public ContainerType getContainerType() {
         return type;
     }
 
+    /**
+     * Returns the number of slots in the array
+     *
+     * @return The number of slots in the array.
+     */
     public int getSlots() {
         return slots;
     }
 
+    /**
+     * Given a window type and number of slots, return the InventoryType that matches
+     *
+     * @param windowType The type of window.
+     * @param slots The number of slots in the inventory.
+     * @return The first inventory type that matches the window type and slots.
+     */
     public static InventoryType getInventoryType(int windowType, int slots) {
         return Arrays.stream(values()).filter(inventoryType -> inventoryType.getContainerType().getIndex() == windowType && inventoryType.getSlots() == slots).findFirst().orElse(GENERIC_9x1);
     }
